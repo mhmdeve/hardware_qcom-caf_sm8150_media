@@ -1,7 +1,5 @@
 CONFIG_PATH := $(TARGET_HALS_PATH)/media/conf_files/msmnile
 
-# Video feature flags
-
 # Video configuration files
 PRODUCT_COPY_FILES += \
     $(CONFIG_PATH)/codec2.vendor.ext.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/codec2.vendor.ext.policy \
@@ -27,21 +25,23 @@ ifeq ($(GENERIC_ODM_IMAGE),true)
     PRODUCT_ODM_PROPERTIES += debug.stagefright.ccodec=4
     PRODUCT_ODM_PROPERTIES += debug.stagefright.omx_default_rank=1000
     PRODUCT_COPY_FILES += \
-      device/qcom/common/media/media_profiles.xml:$(TARGET_COPY_OUT_ODM)/etc/media_profiles_V1_0.xml \
-      device/qcom/common/media/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_vendor.xml
+      device/qcom/common/vendor/media/media_profiles.xml:$(TARGET_COPY_OUT_ODM)/etc/media_profiles_V1_0.xml \
+      device/qcom/common/vendor/media/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_vendor.xml
 
 else ifneq ($(TARGET_FWK_SUPPORTS_AV_VALUEADDS),false)
     $(warning "Enabling codec2.0 non-audio SW only for non-generic odm build variant")
+    ifeq (,$(filter media-legacy, $(TARGET_COMMON_QTI_COMPONENTS)))
     DEVICE_MANIFEST_FILE += $(TARGET_HALS_PATH)/media/conf_files/msmnile/c2_manifest.xml
+    endif
     PRODUCT_PROPERTY_OVERRIDES += debug.stagefright.omx_default_rank=0
     PRODUCT_COPY_FILES += \
-      device/qcom/common/media/media_profiles.xml:$(TARGET_COPY_OUT_ODM)/etc/media_profiles_V1_0.xml \
+      device/qcom/common/vendor/media/media_profiles.xml:$(TARGET_COPY_OUT_ODM)/etc/media_profiles_V1_0.xml \
       $(CONFIG_PATH)/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_vendor.xml
 
 else
     $(warning "Compiling without value-added features")
     DEVICE_MANIFEST_FILE += $(TARGET_HALS_PATH)/media/conf_files/msmnile/c2_manifest.xml
     PRODUCT_COPY_FILES += \
-      device/qcom/common/media/media_profiles.xml:$(TARGET_COPY_OUT_ODM)/etc/media_profiles_V1_0.xml \
-      device/qcom/common/media/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_vendor.xml
+      device/qcom/common/vendor/media/media_profiles.xml:$(TARGET_COPY_OUT_ODM)/etc/media_profiles_V1_0.xml \
+      device/qcom/common/vendor/media/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_vendor.xml
 endif
